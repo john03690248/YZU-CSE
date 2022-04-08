@@ -1,0 +1,9 @@
+說明文件:
+	1.最開始設定x的最大值MAX_FIBO,當使用者輸入後,去判斷a0是否大於MAX_FIBO或小於0.若超出範圍直接結束程式.
+	2.若介於範圍內,就去做fibo的運算.進到fibo中,先去判斷x的範圍然後去做相對應的function.
+	3.需要用到recursive的有三種條件,我分別取名為fibo1,fibo2,fibo3,每個recursive中先開兩個位置(word)給原本的x值和return address,接著過程中再利用stack去存取值,最後回傳結果.
+	4.最後答案會存到a0,我之所以會用到mv是因為還要輸出string "The damage:"會使用到a0,故先暫時將答案a0放到s2之後再mv回來做output.
+
+*a7固定存放system call的call number.
+*相關更加詳細的註解寫在程式碼中.
+	
