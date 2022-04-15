@@ -14,7 +14,6 @@ main:
 	li a7, 5
 	ecall
 	bge a0, s1, done	# if x >= 100 done 
-	bltz a0, done		# if x < 0 done
 	
 	jal fibo
 	mv s2, a0	# store answer in s2 temporarily
