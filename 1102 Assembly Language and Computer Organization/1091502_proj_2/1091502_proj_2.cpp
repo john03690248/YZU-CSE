@@ -156,12 +156,12 @@ int main() {
 		if (predictorResult != result)    //misprediction
 			stateDatabase[currentEntry].numMisprediction++;
 
-		cout << "entry: " << stateDatabase[currentEntry].entry << "       " << instrDatabase[tempi].action << " " << instrDatabase[tempi].positions[0] << "," << instrDatabase[tempi].positions[1];    //output  
+		cout << "entry: " << stateDatabase[currentEntry].entry << "       " << instrDatabase[tempi].label << " " << instrDatabase[tempi].action << " " << instrDatabase[tempi].positions[0] << "," << instrDatabase[tempi].positions[1];    //output  
 		if (instrDatabase[tempi].positions[2] != "") 
 			cout << "," << instrDatabase[tempi].positions[2];
 		cout << endl;
 		cout << "(" << stateDatabase[currentEntry].history << ", " << stateDatabase[currentEntry].states[0] << ", " << stateDatabase[currentEntry].states[1] << ", " << stateDatabase[currentEntry].states[2] << ", " << stateDatabase[currentEntry].states[3] << ", " << stateDatabase[currentEntry].states[4] << ", "
-			<< stateDatabase[currentEntry].states[5] << ", " << stateDatabase[currentEntry].states[6] << ", " << stateDatabase[currentEntry].states[7] << ") " << predictorResult << " " << result << "  misprediction: " << stateDatabase[currentEntry].numMisprediction << endl << endl;
+			<< stateDatabase[currentEntry].states[5] << ", " << stateDatabase[currentEntry].states[6] << ", " << stateDatabase[currentEntry].states[7] << ") " << "  prediction / outcome  " << predictorResult << " " << result << "  misprediction: " << stateDatabase[currentEntry].numMisprediction << endl << endl;
 
 		if (result == "T") {    //state (update state after prediction)
 			string _tempState = stateDatabase[currentEntry].states[toDecimal(stateDatabase[currentEntry].history)];
