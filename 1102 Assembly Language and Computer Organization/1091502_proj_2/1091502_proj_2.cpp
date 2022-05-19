@@ -3,13 +3,12 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <math.h>
 using namespace std;
 struct instr {
 	string label;
 	string action;
 	string positions[3];
-	int numPastLabel = 0;
+	int numPastLabel = 0;    // be used to record how many labels current instr has pasted
 };
 struct state {
 	string history = "000";
@@ -21,20 +20,20 @@ struct variable {
 	string name;
 	int value;
 };
-int existVariable(vector <variable> variableDatabase, string name);
-int toDecimal(string binary);
+int existVariable(vector <variable> variableDatabase, string name);    // return the index of variable if it exist, or return -1
+int toDecimal(string binary);    // transform binary to decimal
 int main() {
 	ifstream in;
 	in.open("input.txt");
 	string line, str;
-	vector <instr> instrDatabase;
-	vector <state> stateDatabase;
-	vector <variable> variableDatabase;
+	vector <instr> instrDatabase;        
+	vector <state> stateDatabase;        	
+	vector <variable> variableDatabase;  
 
 	int numPastLabel_ = 0;
 	while (getline(in, line)) {    //transform the data into the specific format
 		instr tempInstr;
-		istringstream stream(line);
+		stringstream stream(line);
 		stream >> str;
 		tempInstr.label = str;
 		if (line[0] == '\t') {
@@ -59,11 +58,10 @@ int main() {
 		instrDatabase.push_back(tempInstr);
 	}
 
-	int entry;
+	int entry;    //init every predictor (entry)
 	cout << "Please input entry(entry > 0):" << endl;
 	cin >> entry;
 	state tempState;
-
 	for (int i = 0; i < entry; i++) {
 		tempState.entry = i;
 		stateDatabase.push_back(tempState);
@@ -76,11 +74,11 @@ int main() {
 
 	string predictorResult;
 	string result;
-	for (int i = 0; i < instrDatabase.size(); i++) {    // 6 solutions include "li" , "add" , "addi" , "andi" , "beq" , "bne"
+	for (int i = 0; i < instrDatabase.size(); i++) {    //( PC )start to run // 6 solutions include "li" , "add" , "addi" , "andi" , "beq" , "bne"
 		int tempi = i;
-		if (instrDatabase[i].action == "")
+		if (instrDatabase[i].action == "")    // skip label
 			continue;
-		if (instrDatabase[i].action == "li") {
+		if (instrDatabase[i].action == "li") {    // li
 			result = "N";
 			int record = existVariable(variableDatabase, instrDatabase[i].positions[0]);
 			if (record == -1) {
@@ -92,7 +90,7 @@ int main() {
 			else
 				variableDatabase[record].value = stoi(instrDatabase[i].positions[1]);
 		}
-		else if (instrDatabase[i].action == "add") {
+		else if (instrDatabase[i].action == "add") {    // add
 			result = "N";
 			int record = existVariable(variableDatabase, instrDatabase[i].positions[0]);
 			if (record == -1) {
@@ -102,7 +100,7 @@ int main() {
 			}
 			variableDatabase[existVariable(variableDatabase, instrDatabase[i].positions[0])].value = variableDatabase[existVariable(variableDatabase, instrDatabase[i].positions[1])].value + variableDatabase[existVariable(variableDatabase, instrDatabase[i].positions[2])].value;
 		}
-		else if (instrDatabase[i].action == "addi") {
+		else if (instrDatabase[i].action == "addi") {    // addi
 			result = "N";
 			int record = existVariable(variableDatabase, instrDatabase[i].positions[0]);
 			if (record == -1) {
@@ -112,7 +110,7 @@ int main() {
 			}
 			variableDatabase[existVariable(variableDatabase, instrDatabase[i].positions[0])].value = variableDatabase[existVariable(variableDatabase, instrDatabase[i].positions[1])].value + stoi(instrDatabase[i].positions[2]);
 		}
-		else if (instrDatabase[i].action == "andi") {
+		else if (instrDatabase[i].action == "andi") {    // andi
 			result = "N";
 			int record = existVariable(variableDatabase, instrDatabase[i].positions[0]);
 			if (record == -1) {
@@ -122,8 +120,8 @@ int main() {
 			}
 			variableDatabase[existVariable(variableDatabase, instrDatabase[i].positions[0])].value = variableDatabase[existVariable(variableDatabase, instrDatabase[i].positions[1])].value % (stoi(instrDatabase[i].positions[2]) + 1);
 		}
-		else if (instrDatabase[i].action == "beq" || instrDatabase[i].action == "bne") {
-			if (instrDatabase[i].action == "beq") {    //true result
+		else if (instrDatabase[i].action == "beq" || instrDatabase[i].action == "bne") {    // beq or bne
+			if (instrDatabase[i].action == "beq") {    // beq    
 				if (variableDatabase[existVariable(variableDatabase, instrDatabase[i].positions[0])].value == variableDatabase[existVariable(variableDatabase, instrDatabase[i].positions[1])].value) {
 					result = "T";
 					for (int j = 0; j < instrDatabase.size(); j++)
@@ -135,7 +133,7 @@ int main() {
 				else
 					result = "N";
 			}
-			else {
+			else {    //bne
 				if (variableDatabase[existVariable(variableDatabase, instrDatabase[i].positions[0])].value != variableDatabase[existVariable(variableDatabase, instrDatabase[i].positions[1])].value) {
 					result = "T";
 					for (int j = 0; j < instrDatabase.size(); j++)
@@ -148,7 +146,7 @@ int main() {
 					result = "N";
 			}
 		}
-		int currentEntry = (tempi - instrDatabase[tempi].numPastLabel) % entry;
+		int currentEntry = (tempi - instrDatabase[tempi].numPastLabel) % entry;    //cal currentEntry (which predictor should be update)
 		string tempState_ = stateDatabase[currentEntry].states[toDecimal(stateDatabase[currentEntry].history)];    //predictor result
 		if (tempState_ == "SN" || tempState_ == "WN")
 			predictorResult = "N";
@@ -165,7 +163,7 @@ int main() {
 		cout << "(" << stateDatabase[currentEntry].history << ", " << stateDatabase[currentEntry].states[0] << ", " << stateDatabase[currentEntry].states[1] << ", " << stateDatabase[currentEntry].states[2] << ", " << stateDatabase[currentEntry].states[3] << ", " << stateDatabase[currentEntry].states[4] << ", "
 			<< stateDatabase[currentEntry].states[5] << ", " << stateDatabase[currentEntry].states[6] << ", " << stateDatabase[currentEntry].states[7] << ") " << predictorResult << " " << result << "  misprediction: " << stateDatabase[currentEntry].numMisprediction << endl << endl;
 
-		if (result == "T") {    //state
+		if (result == "T") {    //state (update state after prediction)
 			string _tempState = stateDatabase[currentEntry].states[toDecimal(stateDatabase[currentEntry].history)];
 			if (_tempState == "WT") stateDatabase[currentEntry].states[toDecimal(stateDatabase[currentEntry].history)] = "ST";
 			else if (_tempState == "WN") stateDatabase[currentEntry].states[toDecimal(stateDatabase[currentEntry].history)] = "WT";
@@ -178,7 +176,7 @@ int main() {
 			else if (_tempState == "ST") stateDatabase[currentEntry].states[toDecimal(stateDatabase[currentEntry].history)] = "WT";
 		}
 
-		stateDatabase[currentEntry].history[0] = stateDatabase[currentEntry].history[1];    //history
+		stateDatabase[currentEntry].history[0] = stateDatabase[currentEntry].history[1];    //history (update history after prediction)
 		stateDatabase[currentEntry].history[1] = stateDatabase[currentEntry].history[2];
 		if (result == "T")
 			stateDatabase[currentEntry].history[2] = '1';

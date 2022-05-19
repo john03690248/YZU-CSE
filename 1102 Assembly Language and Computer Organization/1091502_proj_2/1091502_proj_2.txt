@@ -1,0 +1,26 @@
+說明文件:
+	1.創建三個struct分別為(1)instr:用來處理紀錄input中每條code的格式,方便之後使用.(2)state:用來記錄每個predictor當下的狀態,predictor的數量根據使用者輸入的entry來決定.(3)variable:用來記錄變數的值.
+	2.用vector創建三個資料庫(database),型態分別為以上三種struct.
+	3.除了main function,還另外有用到兩個function.(1)existVariable:用來找變數是否已經存在,如果存在回傳此變數在database裡的index,否則回傳-1.
+	4.最開始先將讀進來的input每一行都轉成我所定義的struct(instr),然後push_back回database.
+	5.讓使用者輸入entry,並push_back該數量(初始化後)的predictor(entry)進去stateDatabase.
+	6.提前先將R0(x0)這個固定variable進去variableDatabase裡.
+	7.Program Counter 開始執行(利用for迴圈),根據project2網站上的高分input,動作包含"li","add","addi","andi","beq","bne".
+	8.有宣告一個tempi來記錄當下的i值,原因是如果遇到"bne"或"beq"會改變當下i的值,這樣會造成後面處理讀錯i值,故使用tempi的替代.
+	9.隨著Program Counter 的執行,判斷該行所執行的action為何(以下解釋遇到不同action所應該執行的動作為何)
+		(9.1)li:利用existVariable function去找該變數是否存在,若不存在,將此值存成struct(variable)並push_back回variableDatabase裡,若存在則修改該此變數在variableDatabase裡的值.
+		(9.2)add:去VariableDatabase裡找兩個source variable的值相加,並修改放入destination variable裡. 
+		(9.3)addi:類似addi,僅第二個source為constant,一樣相加放入destination variable裡.
+		(9.4)andi:相當於第一個source variable 和第二個source(constant)做%運算(取餘數),並放入destination variable裡.
+		(9.5)beq:去檢查兩個source variable的值是否相同,若相同則必須jump到label的位置(改變i的值).
+		(9.6)bne:類似beq,僅差在檢查是否不相同,若不相同要jump到label的位置(改變i的值).
+	10.以上actions除了beq和bne要去判斷條件成立與否來決定outcome(true result)為何,其餘actions的outcome(true result)皆為not taken.
+	11.計算當前instruction所使用的entry(predictor)為何,當前的i值去減掉所經過的label數,然後%(總entry數),放入currentEntry變數中.
+	12.判斷當前預測出的結果為何,透過stateDatabase去尋找.
+	13.去看outcome(true result)和(predict result)是否相同,若不同,則當前entry的state中的misprediction + 1.
+	14.去更新當前entry的狀態,根據有限狀態機制圖去做改變.
+	15.去更新當前entry的history,根據過去的outcome(true result)來改變.
+
+*struct(instr)中的label在遇到PC時,存PC的值,若遇到label,則存該label的name. 
+*相關隨附的註解寫在程式碼中
+*題目網址:https://hackmd.io/@wycchen/1102ALCO_project2
