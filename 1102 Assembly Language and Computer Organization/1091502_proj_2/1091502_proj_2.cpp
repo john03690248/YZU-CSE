@@ -74,7 +74,7 @@ int main() {
 
 	string predictorResult;
 	string result;
-	for (int i = 0; i < instrDatabase.size(); i++) {    //( PC )start to run // 6 solutions include "li" , "add" , "addi" , "andi" , "beq" , "bne"
+	for (int i = 0; i < instrDatabase.size(); i++) {    //( PC ) start to run    // 6 solutions include "li" , "add" , "addi" , "andi" , "beq" , "bne"
 		int tempi = i;
 		if (instrDatabase[i].action == "")    // skip label
 			continue;
