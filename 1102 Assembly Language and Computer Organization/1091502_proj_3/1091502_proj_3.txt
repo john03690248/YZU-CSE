@@ -1,0 +1,18 @@
+說明文件:
+	1.最開始建立兩個struct,一個為instr,裡面存放每條input進來instruction的資訊,二為data_是用來存RS中的每條資訊,其中還包含該RS須dispatch(execute)的cycle數,和該RS須writeBack的cycle數,和該RS是否正在使用(busyOrNot).
+	2.最先讓使用者輸入各別instruction應該要花的execute cycle數.包含(add/addi/sub),(mul),(div).
+	3.另外因為每個instruction有執行unit上限的問題,有使用三個變數去記錄該unit釋放的cycle為何(xxx_unitReleaseCycle).
+	4.一開始初始化資料,RF裡F1-F5的值預設為(0,2,4,6,8),和一些用來記錄RAT和RS正在使用數量的變數(numRATuse,numRSxbusy).
+	5.將IQ,RAT,RF分別用vector去建立,RS用array去建立.
+	6.以上處理好後,開始讀檔,將資料讀入IQ中.
+	7.接著開始執行,從cycle 1開始.
+	8.以下程式碼分為四大部分,按順序為issue --> execute(check every RS can dispatch or not) --> write back --> output.
+		(8.1).issue:判斷需要的資料有沒有在RAT中,若無則從RF中取值,接著將資訊寫入對應的RS中(也必須判斷目前RS有無空間),然後將結果更新到RAT.
+		(8.2).execute:判斷每個RS中是否有可以dispatch(execute)的資料(也必須判斷要執行的instruction unit是否別的instruction正在使用),然後將		該資訊預期的execute cycle數和write back數填上.
+		(8.3).write back:判斷RS中是否有當前cycle可以執行write back的資料,有的話必須將結果update 到 RAT,RF,和RS中.
+		(8.4).output:照(hackmd網站上)題目上的output格式輸出,當有變化才輸出.
+	9.接著cycle繼續往下執行,直到IQ,RAT,RS中皆無資訊始可停止.
+
+*buffer的部分,教授說可以忽略,故我沒去output buffer的部分.
+*相關隨附的註解寫在程式碼中
+*題目網址:https://hackmd.io/@wycchen/1102ALCO
