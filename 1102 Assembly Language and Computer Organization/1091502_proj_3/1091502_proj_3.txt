@@ -8,7 +8,7 @@
 	7.接著開始執行,從cycle 1開始.
 	8.以下程式碼分為四大部分,按順序為issue --> execute(check every RS can dispatch or not) --> write back --> output.
 		(8.1).issue:判斷需要的資料有沒有在RAT中,若無則從RF中取值,接著將資訊寫入對應的RS中(也必須判斷目前RS有無空間),然後將結果更新到RAT.
-		(8.2).execute:判斷每個RS中是否有可以dispatch(execute)的資料(也必須判斷要執行的instruction unit是否別的instruction正在使用),然後將		該資訊預期的execute cycle數和write back數填上.
+		(8.2).execute:判斷每個RS中是否有可以dispatch(execute)的資料(也必須判斷要執行的instruction unit是否別的instruction正在使用),然後將該資訊預期的execute cycle數和write back數填上.
 		(8.3).write back:判斷RS中是否有當前cycle可以執行write back的資料,有的話必須將結果update 到 RAT,RF,和RS中.
 		(8.4).output:照(hackmd網站上)題目上的output格式輸出,當有變化才輸出.
 	9.接著cycle繼續往下執行,直到IQ,RAT,RS中皆無資訊始可停止.
